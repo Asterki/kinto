@@ -16,7 +16,7 @@ class Command(command_base.Command):
             branch = f.read().strip()
             
         # Get the current commit
-        with open(f".kinto/{branch}", "r") as f:
+        with open(f".kinto/branches/heads/{branch}", "r") as f:
             commit = f.read().strip()
             
         # Get the current staging area

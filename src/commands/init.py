@@ -43,6 +43,9 @@ class Command(command_base.Command):
         with open(".kinto/commits/1", "w") as f:
             f.write("")
             
+        # Create the filestore directory
+        os.makedirs(".kinto/filestore")
+            
 
         print("Initialized empty Kinto repository in .kinto")
         pass

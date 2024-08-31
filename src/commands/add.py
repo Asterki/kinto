@@ -23,7 +23,7 @@ class Command(command_base.Command):
             branch = f.read().strip()
 
         # Get the current commit
-        with open(f".kinto/{branch}", "r") as f:
+        with open(f".kinto/branches/heads/{branch}", "r") as f:
             commit = f.read().strip()
 
         # Get the current staging area
@@ -50,6 +50,8 @@ class Command(command_base.Command):
                     if file not in ignored_files_or_folders:
                         if not file.startswith("./"):
                             file = f"./{file}"
+                            
+                        print(file)
 
                         # Check if the file is already in the staging area
                         if file not in staging_area:
