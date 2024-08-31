@@ -16,7 +16,7 @@ class App:
                 del self.command_list[i]
             else:
                 self.command_list[i] = command.replace(".py", "")
-                
+
         # Remove "command_base" from the list of commands
         self.command_list.remove("command_base")
 
@@ -25,10 +25,10 @@ class App:
             command: __import__(f"commands.{command}", fromlist=[command])
             for command in self.command_list
         }
-        
+
         # Convert the commands to a list
         self.command_list = list(self.command_list)
-        
+
         # Register the aliases
         self.new_commands = {}
         for command in self.commands:
@@ -36,15 +36,17 @@ class App:
                 self.new_commands[alias] = self.commands[command]
                 self.command_list.append(alias)
         self.commands.update(self.new_commands)
-        
 
     def showHelpMessage(self):
-        self.commands["help"].Command().run()
+        self.commands["help"].Command().run([])
 
     def run(self):
-        if len(sys.argv) == 1 or sys.argv[1] not in self.command_list:
-            print("Invalid command, see python3 index.py help for a list of commands")
-        elif len(sys.argv) == 2:
+        if len(sys.argv) == 1:
+            self.showHelpMessage()
+        elif sys.argv[1] not in self.command_list:
+            print(f"Command '{sys.argv[1]}' not found")
+            print("Type 'help' to see a list of commands")
+        else:
             # Run the command and pass any arguments the user may have given via the CLI
             command = self.commands.get(sys.argv[1]).Command()
             command.run(sys.argv[2:])
