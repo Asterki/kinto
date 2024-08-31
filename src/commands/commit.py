@@ -1,6 +1,7 @@
 import random
 import os
 import shutil
+from datetime import datetime
 
 import commands.command_base as command_base
 
@@ -26,7 +27,7 @@ class Command(command_base.Command):
 
         # Get the current commit
         with open(f".kinto/branches/{branch}", "r") as f:
-            commit = f.read().strip()
+            commit = f.read().strip().split("\n")[0]
 
         # Get the current staging area
         with open(f".kinto/commits/{branch}/{commit}", "r") as f:
@@ -74,8 +75,20 @@ class Command(command_base.Command):
             f.write(f"{commit_message}\n")  # Add the commit message
 
         # Update the branch
-        with open(f".kinto/branches/{branch}", "w") as f:
-            f.write(commit)
+        with open(f".kinto/branches/{branch}", "r+") as f:
+            current_content = f.read().strip().split("\n")
+            # Change the current commit to the new commit (the first line)
+            current_content[0] = commit
+
+            # Update the history
+            date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            current_content.append(f"{commit} - {date}: {commit_message}")
+
+            # Write the updated content back to the file
+            f.seek(0)
+            f.write("\n".join(current_content))
+            f.truncate()
+            
 
         print(commit_message)
         print("====================================")
