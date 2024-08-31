@@ -15,12 +15,33 @@ class Command(command_base.Command):
 
     def run(self, *args):
         if os.path.exists(".kinto"):
-            print("Kinto repository already exists")
+            print("Kinto repository reinitialized")
             return
+        
+        # Create the .kintoignore file
+        with open(".kintoignore", "w") as f:
+            f.write(".kinto\n.kintoignore\n")
+
+        # Create the .kinto directory
         os.makedirs(".kinto")
-        os.makedirs(".kinto/branches")
-        os.makedirs(".kinto/commits")
+
+        # Create the HEAD file
         with open(".kinto/HEAD", "w") as f:
-            f.write("refs/heads/master")
+            f.write("branches/heads/master")
+
+        # Create the default branch (master)
+        os.makedirs(".kinto/branches/heads")
+        with open(".kinto/branches/heads/master", "w") as f:
+            f.write("1")
+
+        # Create the first commit
+        os.makedirs(".kinto/commits")
+        with open(".kinto/commits/1", "w") as f:
+            f.write("")
+
+        # Create the staging area
+        with open(".kinto/commits/1", "r") as f:
+            staging_area = f.read().strip().split("\n")
+
         print("Initialized empty Kinto repository in .kinto")
         pass
