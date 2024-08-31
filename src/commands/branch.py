@@ -66,8 +66,20 @@ class Command(command_base.Command):
 
         with open(f".kinto/branches/{branch}", "w") as f:
             f.write("1")
-
+        
+        # Copy the files from the current branch
+        current_branch = ""
+        with open(".kinto/HEAD", "r") as f:
+            current_branch = f.read().strip()
+            
         os.makedirs(f".kinto/commits/{branch}")
-        os.makedirs(f".kinto/filestore/{branch}/1")
+        with open(f".kinto/commits/{branch}/1", "w") as f:
+            f.write(f"Forked from {current_branch}")
+            
+        current_commit = ""
+        with open(f".kinto/branches/{current_branch}", "r") as f:
+            current_commit = f.read().strip()
+            
+        shutil.copytree(f".kinto/filestore/{current_branch}/{current_commit}", f".kinto/filestore/{branch}/1")
 
         print(f"Branch '{branch}' created")
