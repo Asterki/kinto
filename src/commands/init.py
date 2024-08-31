@@ -40,8 +40,9 @@ class Command(command_base.Command):
             f.write("")
 
         # Create the staging area
-        with open(".kinto/commits/1", "r") as f:
-            staging_area = f.read().strip().split("\n")
+        with open(".kinto/commits/1", "w") as f:
+            f.write("")
+            
 
         print("Initialized empty Kinto repository in .kinto")
         pass
