@@ -14,6 +14,15 @@ class Command(command_base.Command):
         }
 
     def run(self, *args):
+        """
+        Adds the specified files or folders to the staging area.
+
+        Parameters:
+        - args: A variable number of arguments representing the files or folders to be added.
+
+        Returns:
+        None
+        """
         if len(args[0]) == 0:
             print("No file specified")
             return
@@ -48,23 +57,27 @@ class Command(command_base.Command):
                     add_files_in_folder(file)
                 else:
                     if file not in ignored_files_or_folders:
-                        staging_area.append(file)
+                        # Check if the file is already in the staging area
+                        if file not in staging_area:
+                            staging_area.append(file)
                     else:
-                        print(f"File '{file}' is ignored, it will not be added")
+                        print(f"File/Folder '{file}' is ignored, it will not be added")
 
         for filePath in args[0]:
             # Check if the file is a folder
             if os.path.isdir(filePath):
                 add_files_in_folder(filePath)
             else:
+                # Check if the file exists and is not ignored
                 if filePath not in ignored_files_or_folders and os.path.exists(
                     filePath
                 ):
-                    staging_area.append(filePath)
+                    # Check if the file is already in the staging area
+                    if filePath not in staging_area:
+                        staging_area.append(filePath)
                 else:
                     print(f"File '{filePath}' is ignored, it will not be added")
 
         # Write the new staging area
         with open(f".kinto/commits/{commit}", "w") as f:
             f.write("\n".join(staging_area))
-        pass
