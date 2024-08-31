@@ -48,7 +48,9 @@ class Command(command_base.Command):
 
         if len(staging_area) == 1:
             print("No files in the staging area")
-            return
+            answer = input("Do you want to commit an empty commit? (y/n): ")
+            if answer.lower() != "y":
+                return
 
         # Create the folder structure
         for file in staging_area[1:]:
