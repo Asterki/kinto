@@ -19,11 +19,10 @@ class Command(command_base.Command):
         if not os.path.exists(".kinto"):
             print("Not a Kinto repository, run 'kinto init' to initialize")
             return
-        
+
         # Get the current branch
         with open(".kinto/HEAD", "r") as f:
             branch = f.read().strip()
-            
 
         # Get the current commit
         with open(f".kinto/branches/{branch}", "r") as f:
@@ -47,8 +46,12 @@ class Command(command_base.Command):
         # Create the new commit folder
         os.mkdir(f".kinto/filestore/{branch}/{commit}")
 
+        if len(staging_area) == 1:
+            print("No files in the staging area")
+            return
+
         # Create the folder structure
-        for file in staging_area:
+        for file in staging_area[1:]:
             if file.count("/") > 1:  # This means that the file is inside a folder
                 folder_path = file[2:]  # Remove the "./" from the file path
                 folder_path = "/".join(
@@ -61,18 +64,20 @@ class Command(command_base.Command):
                     os.makedirs(f".kinto/filestore/{branch}/{commit}/{folder_path}")
 
         # Copy the files to the filestore
-        for file in staging_area:
+        for file in staging_area[1:]:
             shutil.copy(file, f".kinto/filestore/{branch}/{commit}/{file[2:]}")
-            
+
         # Write the new commit
         with open(f".kinto/commits/{branch}/{commit}", "w") as f:
-            f.write("\n") # Empty commit
-            
+            f.write(f"{commit_message}\n")  # Add the commit message
+
         # Update the branch
         with open(f".kinto/branches/{branch}", "w") as f:
             f.write(commit)
 
-        print("\n".join(staging_area))
+        print(commit_message)
+        print("====================================")
+        print("\n".join(staging_area[1:]))
         print("====================================")
         print("Changes committed")
         print(f"Commit hash: {commit}")

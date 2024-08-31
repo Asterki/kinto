@@ -30,15 +30,18 @@ class Command(command_base.Command):
         with open(f".kinto/commits/{branch}/{commit}", "r") as f:
             staging_area = f.read().strip().split("\n")
 
-        if len(staging_area) == 0:
-            print("No files in the staging area")
-        else:
-            print(f"On branch {branch}, commit {commit}, staging area:")
-            if len(staging_area) == 1 and staging_area[0] == "":
-                print("  No files in the staging area")
-            elif len(staging_area) > 10:
-                for file in staging_area[:10]:
-                    print(f"  {file}")
+        commit_message = staging_area[0]
+        print(f'On branch {branch}, commit {commit} "{commit_message}"')
+        print("Changes to be committed:")
+
+        if len(staging_area[1:]) == 0:
+            print("  No files in the staging area")
+        elif len(staging_area) > 10:
+            for file in staging_area[1:11]:
+                print(f"  {file}")
                 print(f"  ... and {len(staging_area) - 10} more")
+        elif len(staging_area) <= 10:
+            for file in staging_area[1:]:
+                print(f"  {file}")
 
         pass

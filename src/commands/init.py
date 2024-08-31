@@ -37,7 +37,7 @@ class Command(command_base.Command):
         # Create the first commit 
         os.makedirs(".kinto/commits/master")
         with open(".kinto/commits/master/1", "w") as f:
-            f.write("")
+            f.write("Initial commit")
             
         # Create the filestore directory for the master branch
         os.makedirs(".kinto/filestore/master/1")
