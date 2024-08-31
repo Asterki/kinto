@@ -40,7 +40,7 @@ class Command(command_base.Command):
             print(
                 "Kinto - A simple command line version control system, written in Python"
             )
-            print("By: Asterki (https://github.com/Asterki")
+            print("By: Asterki (https://github.com/Asterki)")
 
             print("\nCommands:")
             for command in commands:
