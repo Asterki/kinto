@@ -5,14 +5,10 @@ import abc
 class Command(abc.ABC):
     @property
     @abc.abstractmethod
-    def description(self):
+    def run(self, *args):
         pass
 
     @property
     @abc.abstractmethod
-    def usage(self):
-        pass
-
-    @abc.abstractmethod
-    def run(self):
+    def info(self) -> dict:
         pass
