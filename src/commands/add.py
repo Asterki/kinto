@@ -18,16 +18,20 @@ class Command(command_base.Command):
             print("No file specified")
             return
 
+        if not os.path.exists(".kinto"):
+            print("Not a Kinto repository, run 'kinto init' to initialize")
+            return
+
         # Get the current branch
         with open(".kinto/HEAD", "r") as f:
             branch = f.read().strip()
 
         # Get the current commit
-        with open(f".kinto/branches/heads/{branch}", "r") as f:
+        with open(f".kinto/branches/{branch}", "r") as f:
             commit = f.read().strip()
 
         # Get the current staging area
-        with open(f".kinto/commits/{commit}", "r") as f:
+        with open(f".kinto/commits/{branch}/{commit}", "r") as f:
             staging_area = f.read().strip().split("\n")
 
         # Get the ignored files inside .kintoignore
@@ -50,7 +54,7 @@ class Command(command_base.Command):
                     if file not in ignored_files_or_folders:
                         if not file.startswith("./"):
                             file = f"./{file}"
-                            
+
                         print(file)
 
                         # Check if the file is already in the staging area
@@ -78,7 +82,10 @@ class Command(command_base.Command):
                     print(f"File '{filePath}' is ignored, it will not be added")
 
         # Write the new staging area
-        with open(f".kinto/commits/{commit}", "w") as f:
-            f.write("\n".join(staging_area))
+        with open(f".kinto/commits/{branch}/{commit}", "w") as f:
+            staging_area = "\n".join(staging_area)
+            staging_area = staging_area.strip()
+            f.write(staging_area)
 
+        print("====================================")
         print("File(s) added to the staging area")

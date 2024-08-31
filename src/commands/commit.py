@@ -16,16 +16,21 @@ class Command(command_base.Command):
         }
 
     def run(self, *args):
+        if not os.path.exists(".kinto"):
+            print("Not a Kinto repository, run 'kinto init' to initialize")
+            return
+        
         # Get the current branch
         with open(".kinto/HEAD", "r") as f:
             branch = f.read().strip()
+            
 
         # Get the current commit
-        with open(f".kinto/branches/heads/{branch}", "r") as f:
+        with open(f".kinto/branches/{branch}", "r") as f:
             commit = f.read().strip()
 
         # Get the current staging area
-        with open(f".kinto/commits/{commit}", "r") as f:
+        with open(f".kinto/commits/{branch}/{commit}", "r") as f:
             staging_area = f.read().strip().split("\n")
 
         # Get the commit message
@@ -60,11 +65,11 @@ class Command(command_base.Command):
             shutil.copy(file, f".kinto/filestore/{branch}/{commit}/{file[2:]}")
             
         # Write the new commit
-        with open(f".kinto/commits/{commit}", "w") as f:
+        with open(f".kinto/commits/{branch}/{commit}", "w") as f:
             f.write("\n") # Empty commit
             
         # Update the branch
-        with open(f".kinto/branches/heads/{branch}", "w") as f:
+        with open(f".kinto/branches/{branch}", "w") as f:
             f.write(commit)
 
         print("\n".join(staging_area))
