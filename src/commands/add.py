@@ -90,7 +90,6 @@ class Command(command_base.Command):
                         filePath = f"./{filePath}"
 
                     if filePath not in current_staging_area:
-                        print(filePath)
                         current_staging_area.append(filePath)
 
         final_staging_area = []
@@ -111,13 +110,6 @@ class Command(command_base.Command):
                 if file not in current_staging_area:
                     # Add a D at the start of the file name
                     final_staging_area.append(f"D {file}")
-
-        print(final_staging_area)
-        print("===")
-        print(current_staging_area)
-        print("===")
-        print(old_staging_area)
-        print("===")
 
         # Write the new staging area
         with open(f".kinto/commits/{branch}/{commit}", "r+") as f:

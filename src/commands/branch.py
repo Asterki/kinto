@@ -81,5 +81,9 @@ class Command(command_base.Command):
             current_commit = f.read().strip().split("\n")[0]
             
         shutil.copytree(f".kinto/filestore/{current_branch}/{current_commit}", f".kinto/filestore/{branch}/1")
+        
+        # Add the new commit to the branch
+        with open(f".kinto/branches/{branch}", "w") as f:
+            f.write("1\n1")
 
         print(f"Branch '{branch}' created")

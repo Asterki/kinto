@@ -39,7 +39,7 @@ class Command(command_base.Command):
         elif len(staging_area) > 10:
             for file in staging_area[1:11]:
                 print(f"  {file}")
-                print(f"  ... and {len(staging_area) - 10} more")
+            print(f"  ... and {len(staging_area) - 10} more")
         elif len(staging_area) <= 10:
             for file in staging_area[1:]:
                 print(f"  {file}")

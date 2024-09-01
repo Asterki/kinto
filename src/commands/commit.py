@@ -68,7 +68,8 @@ class Command(command_base.Command):
 
         # Copy the files to the filestore
         for file in staging_area:
-            shutil.copy(file[4:], f".kinto/filestore/{branch}/{commit}/{file[4:]}")
+            if not file.startswith("D "):  # If the file is not deleted
+                shutil.copy(file[4:], f".kinto/filestore/{branch}/{commit}/{file[4:]}")
 
         # Write the new commit
         with open(f".kinto/commits/{branch}/{commit}", "w") as f:
