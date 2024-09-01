@@ -41,6 +41,10 @@ class Command(command_base.Command):
             
         # Create the filestore directory for the master branch
         os.makedirs(".kinto/filestore/master/1")
+        
+        # Add the initial commit to the log
+        with open(".kinto/branches/master", "a") as f:
+            f.write("\n1")
             
         print("Initialized empty Kinto repository in .kinto")
         pass

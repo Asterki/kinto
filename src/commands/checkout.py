@@ -22,7 +22,7 @@ class Command(command_base.Command):
         if len(args[0]) == 0: # Show all the branches
             current_branch = ""
             with open(".kinto/HEAD", "r") as f:
-                current_branch = f.read().strip()
+                current_branch = f.read().strip().split("\n")[0]
             
             print(f"On branch {current_branch}")
             print("Branches:")
@@ -42,7 +42,7 @@ class Command(command_base.Command):
                 
             # Get the current commit
             with open(f".kinto/branches/{branch}", "r") as f:
-                commit = f.read().strip()
+                commit = f.read().strip().split("\n")[0]
                 
             # Move the files from the filestore, overwrite the existing files
             shutil.copytree(f".kinto/filestore/{branch}/{commit}", ".", dirs_exist_ok=True)

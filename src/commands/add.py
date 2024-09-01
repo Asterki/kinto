@@ -28,11 +28,29 @@ class Command(command_base.Command):
 
         # Get the current commit
         with open(f".kinto/branches/{branch}", "r") as f:
-            commit = f.read().strip()
+            commit = f.read().strip().split("\n")[0]
 
         # Get the current staging area
         with open(f".kinto/commits/{branch}/{commit}", "r") as f:
-            staging_area = f.read().strip().split("\n")
+            current_staging_area = f.read().strip().split("\n")[1:]
+
+        # Get the old staging area (if there is one)
+        old_staging_area = []
+        with open(f".kinto/branches/{branch}", "r") as f:
+            doc = f.read().strip().split("\n")
+            if (
+                len(doc) >= 3
+            ):  # If there's more than one commit, skip the first line since it's the current commit
+                old_commit = doc[-2].split(" ")[0]
+                
+                print(old_commit)
+
+                with open(f".kinto/commits/{branch}/{old_commit}", "r") as f:
+                    old_staging_area = f.read().strip().split("\n")[1:]
+
+        # Remove the U M D from the file names
+        old_staging_area = list(map(lambda x: x[2:], old_staging_area))
+        current_staging_area = list(map(lambda x: x[2:], current_staging_area))
 
         # Get the ignored files inside .kintoignore
         ignored_files_or_folders = []
@@ -55,13 +73,8 @@ class Command(command_base.Command):
                         if not file.startswith("./"):
                             file = f"./{file}"
 
-                        print(file)
-
-                        # Check if the file is already in the staging area
-                        if file not in staging_area:
-                            staging_area.append(file)
-                    else:
-                        print(f"File/Folder '{file}' is ignored, it will not be added")
+                        if file not in current_staging_area:
+                            current_staging_area.append(f"{file}")
 
         for filePath in args[0]:
             # Check if the file is a folder
@@ -76,16 +89,44 @@ class Command(command_base.Command):
                     if not filePath.startswith("./"):
                         filePath = f"./{filePath}"
 
-                    if filePath not in staging_area:
-                        staging_area.append(filePath)
-                else:
-                    print(f"File '{filePath}' is ignored, it will not be added")
+                    if filePath not in current_staging_area:
+                        print(filePath)
+                        current_staging_area.append(filePath)
+
+        final_staging_area = []
+
+        # Compare the current staging area with the old one
+        if current_staging_area == old_staging_area:
+            print("No changes detected, nothing to add")
+            return
+        else:
+            for file in current_staging_area[1:]:
+                if file not in old_staging_area:
+                    # Add a U at the start of the file name
+                    final_staging_area.append(f"U {file}")
+                elif file in old_staging_area and file in current_staging_area:
+                    # Add a M at the start of the file name
+                    final_staging_area.append(f"M {file}")
+            for file in old_staging_area:
+                if file not in current_staging_area:
+                    # Add a D at the start of the file name
+                    final_staging_area.append(f"D {file}")
+
+        print(final_staging_area)
+        print("===")
+        print(current_staging_area)
+        print("===")
+        print(old_staging_area)
+        print("===")
 
         # Write the new staging area
-        with open(f".kinto/commits/{branch}/{commit}", "w") as f:
-            staging_area = "\n".join(staging_area)
-            staging_area = staging_area.strip()
-            f.write(staging_area)
+        with open(f".kinto/commits/{branch}/{commit}", "r+") as f:
+            commit = f.read().strip().split("\n")[0]
 
-        print("====================================")
+            final_staging_area = "\n".join(final_staging_area)
+            final_staging_area = final_staging_area.strip()
+
+            f.seek(0)
+            f.write(f"{commit}\n{final_staging_area}")
+
         print("File(s) added to the staging area")

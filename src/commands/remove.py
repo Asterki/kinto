@@ -1,5 +1,3 @@
-import os
-
 import commands.command_base as command_base
 
 
@@ -23,34 +21,23 @@ class Command(command_base.Command):
             branch = f.read().strip()
 
         # Get the current commit
-        with open(f".kinto/branches/heads/{branch}", "r") as f:
-            commit = f.read().strip()
+        with open(f".kinto/branches/{branch}", "r") as f:
+            commit = (
+                f.read().strip().split("\n")[0]
+            )  # I'm not removing the first line (commit message) since it would be a hassle to re-add it
 
         # Get the current staging area
-        with open(f".kinto/commits/{commit}", "r") as f:
+        with open(f".kinto/commits/{branch}/{commit}", "r") as f:
             staging_area = f.read().strip().split("\n")
 
-        new_staging_area = []
+        file_name = args[0][0]
 
-        # Remove the files from the staging area
-        for file_path in args[0]:
-            if not file_path.startswith("./"):
-                file_path = f"./{file_path}"
-                
-            # If the file is a folder, remove it recursively
-            if os.path.isdir(file_path):
-                for line in staging_area:
-                    if not line.startswith(file_path):
-                        new_staging_area.append(line)
-            else:
-                if file_path not in staging_area:
-                    print(f"File '{file_path}' is not in the staging area")
-                else: 
-                    new_staging_area = [line for line in staging_area if line != file_path]
+
+        # Filter out the entries that end with the specified file_name
+        new_staging_area = "\n".join(list(filter(lambda x: not x.split(" ")[1].endswith(file_name), staging_area)))
 
         # Write the new staging area
-        with open(f".kinto/commits/{commit}", "w") as f:
-            f.write("\n".join(new_staging_area))
-            
+        with open(f".kinto/commits/{branch}/{commit}", "w") as f:
+            f.write(new_staging_area)
+
         print("File(s) removed from the staging area")
-            

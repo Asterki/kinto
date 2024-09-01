@@ -31,7 +31,7 @@ class Command(command_base.Command):
 
         # Get the current staging area
         with open(f".kinto/commits/{branch}/{commit}", "r") as f:
-            staging_area = f.read().strip().split("\n")
+            staging_area = f.read().strip().split("\n")[1:]
 
         # Get the commit message
         commit_message = " ".join(args[0])
@@ -54,9 +54,9 @@ class Command(command_base.Command):
                 return
 
         # Create the folder structure
-        for file in staging_area[1:]:
+        for file in staging_area:
             if file.count("/") > 1:  # This means that the file is inside a folder
-                folder_path = file[2:]  # Remove the "./" from the file path
+                folder_path = file[4:]  # Remove the "./" from the file path, including U M D (staging area)
                 folder_path = "/".join(
                     folder_path.split("/")[:-1]
                 )  # Remove the file name from the path
@@ -67,8 +67,8 @@ class Command(command_base.Command):
                     os.makedirs(f".kinto/filestore/{branch}/{commit}/{folder_path}")
 
         # Copy the files to the filestore
-        for file in staging_area[1:]:
-            shutil.copy(file, f".kinto/filestore/{branch}/{commit}/{file[2:]}")
+        for file in staging_area:
+            shutil.copy(file[4:], f".kinto/filestore/{branch}/{commit}/{file[4:]}")
 
         # Write the new commit
         with open(f".kinto/commits/{branch}/{commit}", "w") as f:
@@ -92,7 +92,7 @@ class Command(command_base.Command):
 
         print(commit_message)
         print("====================================")
-        print("\n".join(staging_area[1:]))
+        print("\n".join(staging_area))
         print("====================================")
         print("Changes committed")
         print(f"Commit hash: {commit}")

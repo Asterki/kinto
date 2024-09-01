@@ -70,7 +70,7 @@ class Command(command_base.Command):
         # Copy the files from the current branch
         current_branch = ""
         with open(".kinto/HEAD", "r") as f:
-            current_branch = f.read().strip()
+            current_branch = f.read().strip().split("\n")[0]
             
         os.makedirs(f".kinto/commits/{branch}")
         with open(f".kinto/commits/{branch}/1", "w") as f:
@@ -78,7 +78,7 @@ class Command(command_base.Command):
             
         current_commit = ""
         with open(f".kinto/branches/{current_branch}", "r") as f:
-            current_commit = f.read().strip()
+            current_commit = f.read().strip().split("\n")[0]
             
         shutil.copytree(f".kinto/filestore/{current_branch}/{current_commit}", f".kinto/filestore/{branch}/1")
 
