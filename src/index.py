@@ -4,6 +4,8 @@ import os
 
 dotenv.load_dotenv()
 
+# Add the directory containing the commands module to sys.path
+sys.path.append(os.path.join(os.path.dirname(__file__), "commands"))
 
 class App:
     def __init__(self) -> None:
@@ -22,7 +24,7 @@ class App:
 
         # Import the commands
         self.commands = {
-            command: __import__(f"commands.{command}", fromlist=[command])
+           command: __import__(f"{command}", fromlist=[command])
             for command in self.command_list
         }
 
@@ -42,7 +44,7 @@ class App:
 
     def run(self):
         if len(sys.argv) == 1:
-            self.showHelpMessage()
+            print("Type 'help' to see a list of commands")
         elif sys.argv[1] not in self.command_list:
             print(f"Command '{sys.argv[1]}' not found")
             print("Type 'help' to see a list of commands")
