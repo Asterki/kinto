@@ -120,5 +120,3 @@ class Command(command_base.Command):
 
             f.seek(0)
             f.write(f"{commit}\n{final_staging_area}")
-
-        print("File(s) added to the staging area")
