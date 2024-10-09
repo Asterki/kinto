@@ -1,7 +1,7 @@
 # Kinto
 Python Based Version Control System
 
-## This Project Is Still In Progress
+## This Project Is Still In Progress, updates are expected time soon
 
 ## Overview
 Kinto is a Python-based version control system designed to help developers manage changes to their codebase efficiently. It provides a simple and intuitive interface for tracking changes, collaborating with team members, and maintaining a history of project versions.
