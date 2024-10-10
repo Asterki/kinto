@@ -2,6 +2,14 @@ import os
 
 import commands.command_base as command_base
 
+# Constants
+KINTO_DIR = ".kinto"
+KINTO_IGNORE = f"{KINTO_DIR}ignore"
+HEAD_FILE = f"{KINTO_DIR}/HEAD"
+BRANCHES_DIR = f"{KINTO_DIR}/branches"
+COMMITS_DIR = f"{KINTO_DIR}/commits"
+FILESTORE_DIR = f"{KINTO_DIR}/filestore"
+DEFAULT_BRANCH = "main"
 
 # Init command
 class Command(command_base.Command):
@@ -14,37 +22,34 @@ class Command(command_base.Command):
         }
 
     def run(self, *args):
-        if os.path.exists(".kinto"):
-            print("Kinto repository reinitialized")
+        if os.path.exists(KINTO_DIR):
+            print("Kinto repository reinitialized in existing directory.")
             return
-        
-        # Create the .kintoignore file
-        with open(".kintoignore", "w") as f:
-            f.write("./.kinto\n./.kintoignore\n")
 
-        # Create the .kinto directory
-        os.makedirs(".kinto")
+        try:
+            # Create the .kintoignore file
+            with open(KINTO_IGNORE, "w") as f:
+                f.write(f"./{KINTO_DIR}\n./{KINTO_IGNORE}\n")
 
-        # Create the HEAD file
-        with open(".kinto/HEAD", "w") as f:
-            f.write("master")
+            # Create the .kinto directory structure
+            os.makedirs(KINTO_DIR)
+            os.makedirs(BRANCHES_DIR)
+            os.makedirs(f"{COMMITS_DIR}/{DEFAULT_BRANCH}")
+            os.makedirs(f"{FILESTORE_DIR}/{DEFAULT_BRANCH}/1")
 
-        # Create the default branch (master)
-        os.makedirs(".kinto/branches")
-        with open(".kinto/branches/master", "w") as f:
-            f.write("1")
+            # Create the HEAD file and set to default branch
+            with open(HEAD_FILE, "w") as f:
+                f.write(DEFAULT_BRANCH)
 
-        # Create the first commit 
-        os.makedirs(".kinto/commits/master")
-        with open(".kinto/commits/master/1", "w") as f:
-            f.write("Initial commit")
-            
-        # Create the filestore directory for the master branch
-        os.makedirs(".kinto/filestore/master/1")
-        
-        # Add the initial commit to the log
-        with open(".kinto/branches/master", "a") as f:
-            f.write("\n1")
-            
-        print("Initialized empty Kinto repository in .kinto")
-        pass
+            # Create the first commit in the default branch
+            with open(f"{COMMITS_DIR}/{DEFAULT_BRANCH}/1", "w") as f:
+                f.write("Initial commit")
+
+            # Record the initial commit in the branch log
+            with open(f"{BRANCHES_DIR}/{DEFAULT_BRANCH}", "w") as f:
+                f.write("1")
+
+            print(f"Initialized empty Kinto repository in {KINTO_DIR}")
+
+        except Exception as e:
+            print(f"Failed to initialize repository: {e}")
