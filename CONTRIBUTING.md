@@ -1,14 +1,10 @@
-Here's a template for a `CONTRIBUTE.md` file tailored for a Version Control System (VCS) project made in Python:
+# Contributing to Kinto
 
----
-
-# Contributing to [Your Project Name]
-
-Thank you for your interest in contributing to [Your Project Name]! We welcome contributions from the community and are excited to see what you'll bring to the project.
+Thank you for your interest in contributing to Kinto! We welcome contributions from the community and are excited to see what you'll bring to the project.
 
 ## Table of Contents
 
-- [Contributing to \[Your Project Name\]](#contributing-to-your-project-name)
+- [Contributing to Kinto](#contributing-to-kinto)
   - [Table of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
   - [Code of Conduct](#code-of-conduct)
@@ -20,7 +16,6 @@ Thank you for your interest in contributing to [Your Project Name]! We welcome c
     - [Setting Up the Development Environment](#setting-up-the-development-environment)
     - [Writing Tests](#writing-tests)
     - [Commit Guidelines](#commit-guidelines)
-  - [Community](#community)
 
 ## Getting Started
 
@@ -39,7 +34,7 @@ If you encounter any issues with the project, feel free to report them by openin
 - A clear and descriptive title.
 - Steps to reproduce the issue.
 - Any relevant logs or screenshots.
-- The version of Python and [Your Project Name] you are using.
+- The version of Python and Kinto you are using.
 
 ### Suggesting Features
 
@@ -106,12 +101,4 @@ python3 -m unittest
 - Follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
 - Break up larger commits into smaller, logically grouped changes.
 
-## Community
-
-Join our [discussion forum](link-to-discussion) or [chat](link-to-chat) to connect with other contributors, ask questions, and share ideas.
-
-Thank you for contributing to [Your Project Name]!
-
----
-
-Make sure to customize the placeholders like `[Your Project Name]`, and add relevant links where necessary.
+Thank you for contributing to Kinto!
